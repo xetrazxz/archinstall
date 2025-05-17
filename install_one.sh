@@ -43,7 +43,7 @@ mount /dev/sda1 /mnt/efi
 
 # 2 - Install base system
 echo "Installing base system..."
-pacstrap /mnt base linux linux-firmware btrfs-progs grub efibootmgr amd-ucode nano
+pacstrap /mnt base linux-zen base-devel linux-zen-headers linux-firmware btrfs-progs grub efibootmgr amd-ucode nano
 
 # 3 - Generate fstab
 echo "Generating fstab..."
@@ -91,4 +91,6 @@ systemctl enable iwd
 EOF
 
 echo "Installation complete! You can now reboot."
-
+umount -R /mnt
+umount -R /mnt
+reboot
