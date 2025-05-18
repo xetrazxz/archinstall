@@ -85,13 +85,23 @@ echo xetra:dark | chpasswd
 
 echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
+pacman -Sy --noconfirm dhcpcd iwd
+systemctl enable dhcpcd
+systemctl enable iwd
+EOF
+
+echo "ZRAM Setup"
+
+arch-chroot /mnt /bin/bash <<EOF
+pacman -Sy zram-generator
 echo "[zram0]" > /etc/systemd/zram-generator.conf
 echo "zram-size = ram" >> etc/systemd/zram-generator.conf
 echo "compression-algorithm = zstd" >> etc/systemd/zram-generator.conf
 
-pacman -Sy --noconfirm dhcpcd iwd zram-generator
-systemctl enable dhcpcd
-systemctl enable iwd
+echo "vm.swappiness = 180" > /etc/sysctl.d/99-vm-zram-parameters.conf
+echo "vm.watermark_boost_factor = 0" >> /etc/sysctl.d/99-vm-zram-parameters.conf
+echo "vm.watermark_scale_factor = 125" >> /etc/sysctl.d/99-vm-zram-parameters.conf
+echo "vm.page-cluster = 0" >> /etc/sysctl.d/99-vm-zram-parameters.conf
 EOF
 
 echo "Installation complete! You can now reboot."
