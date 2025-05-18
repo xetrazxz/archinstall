@@ -47,17 +47,19 @@ mkfs.btrfs -f "$ARCH_PART"
 mount "$ARCH_PART" /mnt
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@log
-btrfs subvolume create /mnt/@pkg
+btrfs subvolume create /mnt/@root
 btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@var-cache
+btrfs subvolume create /mnt/@var-log
 umount /mnt
 
 mount -o noatime,compress=lzo,subvol=@ "$ARCH_PART" /mnt
-mkdir -p /mnt/{home,var/log,var/cache/pacman/pkg,.snapshots,efi}
-mount -o noatime,compress=lzo,subvol=@home         "$ARCH_PART" /mnt/home
-mount -o noatime,compress=lzo,subvol=@log          "$ARCH_PART" /mnt/var/log
-mount -o noatime,compress=lzo,subvol=@pkg          "$ARCH_PART" /mnt/var/cache/pacman/pkg
-mount -o noatime,compress=lzo,subvol=@snapshots    "$ARCH_PART" /mnt/.snapshots
+mkdir -p /mnt/{home,root,var/log,var/cache/pacman/pkg,.snapshots,efi}
+mount -o noatime,compress=lzo,subvol=@home "$ARCH_PART" /mnt/home
+mount -o noatime,compress=lzo,subvol=@root "$ARCH_PART" /mnt/root
+mount -o noatime,compress=lzo,subvol=@snapshots "$ARCH_PART" /mnt/.snapshots
+mount -o noatime,compress=lzo,subvol=@var-cache "$ARCH_PART" /mnt/var/cache/
+mount -o noatime,compress=lzo,subvol=@var-log $ARCH_PART" /mnt/var/log
 mount "$EFI_PART" /mnt/efi
 
 pacstrap /mnt base linux linux-firmware nano amd-ucode dhcpcd iwd grub efibootmgr btrfs-progs zram-generator
