@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-DISK="/dev/sdX"  # <-- Replace with your actual disk
+DISK="/dev/sda"  # <-- Replace with your actual disk
 EFI_PART="${DISK}1"
 ARCH_PART="${DISK}2"
 TEST_PART="${DISK}3"
