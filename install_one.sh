@@ -87,7 +87,7 @@ echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 echo "[zram0]" > /etc/systemd/zram-generator.conf
 echo "zram-size = ram" >> etc/systemd/zram-generator.conf
-echo "compression-algorithm = zstd" > etc/systemd/zram-generator.conf
+echo "compression-algorithm = zstd" >> etc/systemd/zram-generator.conf
 
 pacman -Sy --noconfirm dhcpcd iwd zram-generator
 systemctl enable dhcpcd
