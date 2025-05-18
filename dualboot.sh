@@ -102,7 +102,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 arch-chroot /mnt /bin/bash <<EOF
 echo "Setting locale and keymap..."
-echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "KEYMAP=$keymap" > /etc/vconsole.conf
@@ -125,6 +125,20 @@ grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
+echo "ZRAM Setup"
+
+arch-chroot /mnt /bin/bash <<EOF
+pacman -Sy zram-generator
+echo "[zram0]" > /etc/systemd/zram-generator.conf
+echo "zram-size = ram" >> etc/systemd/zram-generator.conf
+echo "compression-algorithm = zstd" >> etc/systemd/zram-generator.conf
+
+echo "vm.swappiness = 180" > /etc/sysctl.d/99-vm-zram-parameters.conf
+echo "vm.watermark_boost_factor = 0" >> /etc/sysctl.d/99-vm-zram-parameters.conf
+echo "vm.watermark_scale_factor = 125" >> /etc/sysctl.d/99-vm-zram-parameters.conf
+echo "vm.page-cluster = 0" >> /etc/sysctl.d/99-vm-zram-parameters.conf
+EOF
+
 echo
 echo "== Installation complete! =="
 echo "Hostname: $hostname"
@@ -132,3 +146,4 @@ echo "User: $username"
 echo "Root: $root with Btrfs subvolumes"
 echo "EFI: $efi mounted at /efi (not formatted)"
 echo "Please reboot into your new system."
+echo "Use nmtui in terminal to use wifi"
